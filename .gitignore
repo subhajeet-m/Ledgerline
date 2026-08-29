@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,6 +40,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.neon
 
-AGENTS.md
-CLAUDE.MD
+# prisma (generated client — regenerate with `npx prisma generate`)
+/app/generated/prisma
+
+# AI agent tooling (skills/config pulled in by `neon`/`prisma` CLIs — not app code)
+/.agents/
+/.claude/
+/.windsurf/
+skills-lock.json
