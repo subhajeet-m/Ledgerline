@@ -51,6 +51,7 @@ export default function SignupForm(){
                 label="Name"
                 id="name"
                 error={errors.name?.message}
+                placeholder="Daniel Adams"
                 {...register("name")}
             />
             <InputBox
@@ -58,6 +59,7 @@ export default function SignupForm(){
                 id="email"
                 type="email"
                 error={errors.email?.message}
+                placeholder="daniel@gmail.com"
                 {...register("email")}
             />
             <InputBox
@@ -65,6 +67,7 @@ export default function SignupForm(){
                 id="password"
                 type="password"
                 error={errors.password?.message}
+                placeholder="Daniel@1234"
                 {...register("password")}
             />
             <InputBox

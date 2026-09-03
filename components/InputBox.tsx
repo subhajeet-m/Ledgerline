@@ -6,10 +6,11 @@ type InputBoxProps = {
     id: string;
     type?: string;
     error?: string;
+    placeholder?: string;
 } & UseFormRegisterReturn;
 
 const InputBox = forwardRef<HTMLInputElement, InputBoxProps>(
-    ({ label, id, type = "text", error, ...registerProps }, ref) => {
+    ({ label, id, type = "text", error, placeholder, ...registerProps }, ref) => {
         return (
             <div className="flex flex-col w-full space-y-2.5">
                 <label htmlFor={id} className="text-base font-medium text-black text-left">
@@ -19,6 +20,7 @@ const InputBox = forwardRef<HTMLInputElement, InputBoxProps>(
                     ref={ref}
                     id={id}
                     type={type}
+                    placeholder={placeholder}
                     className="border-2 rounded-sm border-gray-200 focus:border-gray-700 p-1.5"
                     {...registerProps}
                 />
