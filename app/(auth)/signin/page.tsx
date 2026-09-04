@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { signinSchema, SigninType } from "@/lib/validation/auth.schema";
 import Heading from "@/components/Heading";
 import SubHeading from "@/components/SubHeading";
@@ -14,6 +15,7 @@ export default function SigninForm(){
     const {
         register,
         handleSubmit,
+        watch,
         formState: {errors}
     } = useForm<SigninType>({
         resolver: zodResolver(signinSchema)
@@ -21,6 +23,12 @@ export default function SigninForm(){
 
     const router = useRouter();
     const [formError, setFormError] = useState<string | null>(null);
+    const email = watch("email");
+    const password = watch("password");
+
+    useEffect(() => {
+        setFormError(null);
+    }, [email, password]);
 
     const onSubmit = async (data: SigninType)=>{
         setFormError(null);
@@ -62,6 +70,12 @@ export default function SigninForm(){
             placeholder="Enter your password"
             {...register("password")} />
             <Button buttonText="Sign In"/>
+            <p className="text-center text-sm text-gray-400">
+                New to Ledgerline?{" "}
+                <Link href="/signup" className="font-medium text-black hover:underline">
+                    Create your account
+                </Link>
+            </p>
         </form>
     )
 }
