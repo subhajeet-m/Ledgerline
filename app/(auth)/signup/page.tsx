@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { signupSchema, SignupType } from "@/lib/validation/auth.schema";
 import Heading from "@/components/Heading";
 import SubHeading from "@/components/SubHeading";
@@ -14,6 +15,7 @@ export default function SignupForm(){
     const {
         register,
         handleSubmit,
+        watch,
         formState: {errors}
     } = useForm<SignupType>({
         resolver: zodResolver(signupSchema)
@@ -21,6 +23,25 @@ export default function SignupForm(){
 
     const router = useRouter();
     const [formError, setFormError] = useState<string | null>(null);
+    const name = watch("name");
+    const email = watch("email");
+    const password = watch("password");
+    const confirmPassword = watch("confirmPassword");
+    const [passwordsMismatch, setPasswordsMismatch] = useState(false);
+
+    useEffect(() => {
+        setFormError(null);
+    }, [name, email, password, confirmPassword]);
+
+    useEffect(() => {
+        if (!confirmPassword || password === confirmPassword) {
+            setPasswordsMismatch(false);
+            return;
+        }
+        if (password && password.length === confirmPassword.length) {
+            setPasswordsMismatch(true);
+        }
+    }, [password, confirmPassword]);
 
     const onSubmit = async (data: SignupType)=>{
         setFormError(null);
@@ -70,6 +91,9 @@ export default function SignupForm(){
                 placeholder="Daniel@1234"
                 {...register("password")}
             />
+            {passwordsMismatch && (
+                <p className="text-sm text-red-600">Passwords do not match</p>
+            )}
             <InputBox
                 label="Confirm Password"
                 id="confirmPassword"
@@ -79,6 +103,12 @@ export default function SignupForm(){
             />
 
             <Button buttonText="Sign Up" />
+            <p className="text-center text-sm text-gray-400">
+                Already have an account?{" "}
+                <Link href="/signin" className="font-medium text-black hover:underline">
+                    Sign in
+                </Link>
+            </p>
         </form>
     )
 }

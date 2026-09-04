@@ -59,3 +59,76 @@ export async function POST(req: NextRequest){
 
     return response;
 }
+
+function isSafeRedirect(path: string): boolean {
+    return path.startsWith("/") && !path.startsWith("//");
+}
+
+export async function GET(req: NextRequest){
+    const requestedRedirect = req.nextUrl.searchParams.get("redirect");
+    const redirectTo = requestedRedirect && isSafeRedirect(requestedRedirect) ? requestedRedirect : "/dashboard";
+
+    const refreshToken = req.cookies.get("refreshToken")?.value;
+    if(!refreshToken){
+        const response = NextResponse.redirect(new URL("/signin", req.url));
+        response.cookies.delete("accessToken");
+        response.cookies.delete("refreshToken");
+        return response;
+    }
+    try{
+        verifyRefreshToken(refreshToken);
+    }catch{
+        const response = NextResponse.redirect(new URL("/signin", req.url));
+        response.cookies.delete("accessToken");
+        response.cookies.delete("refreshToken");
+        return response;
+    }
+
+    const hashedToken = hashRefreshToken(refreshToken);
+    const findToken = await prisma.refreshToken.findUnique({where: {tokenHash: hashedToken}});
+    if(!findToken || findToken.revokedAt!=null || findToken.expiresAt.getTime()<=Date.now()){
+        const response = NextResponse.redirect(new URL("/signin", req.url));
+        response.cookies.delete("accessToken");
+        response.cookies.delete("refreshToken");
+
+        return response;
+    }
+    await prisma.refreshToken.update({
+        where: {
+            tokenHash: hashedToken,
+        },
+        data: {
+            revokedAt: new Date()
+        }
+    });
+
+    const newAccessToken = signAccessToken({userId: findToken.userId});
+    const {token, expiresAt} = signRefreshToken({userId: findToken.userId});
+    const newHashedRefreshToken = hashRefreshToken(token);
+
+    await prisma.refreshToken.create({
+        data: {
+            userId: findToken.userId,
+            tokenHash: newHashedRefreshToken,
+            expiresAt: expiresAt
+        }
+    });
+
+    const response = NextResponse.redirect(new URL(redirectTo, req.url));
+    response.cookies.set("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 15*60
+    });
+    response.cookies.set("refreshToken", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 7*24*60*60
+    });
+
+    return response;
+}
