@@ -26,8 +26,10 @@ model Wallet{
   id Int @id @default(autoincrement())
   user User @relation(fields: [userId], references: [id])
   userId Int @unique
-  balance Decimal
+  balance Decimal @db.Decimal(12, 2)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  fromWalletId Transaction[] @relation("SenderWallet")
+  toWalletId Transaction[] @relation("ReceiverWallet")
 }
 
 model RefreshToken{
@@ -38,4 +40,16 @@ model RefreshToken{
   expiresAt DateTime @db.Timestamptz(6)
   revokedAt DateTime? @db.Timestamptz(6)
   createdAt DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model Transaction{
+  id Int @id @default(autoincrement())
+  senderWalletId Int
+  senderWallet Wallet @relation("SenderWallet", fields: [senderWalletId], references: [id])
+  receiverWalletId Int
+  receiverWallet Wallet @relation("ReceiverWallet", fields: [receiverWalletId], references: [id])
+  amount Decimal @db.Decimal(12, 2)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  @@index([senderWalletId])
+  @@index([receiverWalletId])
 }
