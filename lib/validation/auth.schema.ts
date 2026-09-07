@@ -28,5 +28,12 @@ export const signinSchema = z.object({
     .regex(/[^A-Za-z0-9]/, { message: "Contain at least one special character" })
 });
 
+export const transferUISchema = z.object({
+    recipientMail: z.email(),
+    amount: z.coerce.number().positive(),
+});
+
 export type SignupType = z.infer<typeof signupSchema>;
 export type SigninType = z.infer<typeof signinSchema>;
+export type TransferInputType = z.input<typeof transferUISchema>;
+export type TransferOutputType = z.infer<typeof transferUISchema>;
