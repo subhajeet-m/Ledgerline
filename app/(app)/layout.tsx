@@ -2,6 +2,7 @@ import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 import Link from "next/link";
+import QueryProvider from "@/components/QueryProvider";
 
 export default async function dashboardLayout({children}:{children:ReactNode}){
     const session = await getSession();
@@ -15,7 +16,7 @@ export default async function dashboardLayout({children}:{children:ReactNode}){
                 <Link href="/transfer" className="text-sm text-gray-600 hover:underline">Transfer</Link>
                 <Link href="/transactions" className="text-sm text-gray-600 hover:underline">Transactions</Link>
             </nav>
-            <main className="mx-auto max-w-4xl p-6">{children}</main>
+            <QueryProvider><main className="mx-auto max-w-4xl p-6">{children}</main></QueryProvider>
         </div>
     )
 }
