@@ -4,6 +4,7 @@ import { transferLimiter } from "@/lib/ratelimit";
 import { getSession } from "@/lib/session";
 import { transferSchema } from "@/lib/validation/transfer.server.schema";
 import { executeTransfer } from "@/lib/wallet";
+import { ApiErrorResponse } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
@@ -27,8 +28,13 @@ export async function POST(req: NextRequest){
 
     const body = await req.json();
     const validation = transferSchema.safeParse(body);
-    if(!validation.success)
-        return NextResponse.json({error: z.flattenError(validation.error)}, {status: 400});
+    if(!validation.success){
+        const flattenedError = z.flattenError(validation.error);
+        return NextResponse.json<ApiErrorResponse>({
+            error: "Please enter valid details",
+            fieldErrors: flattenedError.fieldErrors
+        }, {status: 400});
+    }
 
     const keyClaimed = await claimIdempotencyKey(`transfer:${session.userId}:${idempotencyKey}`);
     if(!keyClaimed)

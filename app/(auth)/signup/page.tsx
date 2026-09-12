@@ -10,15 +10,19 @@ import Heading from "@/components/Heading";
 import SubHeading from "@/components/SubHeading";
 import InputBox from "@/components/InputBox";
 import Button from "@/components/Button";
+import { ApiErrorResponse } from "@/types";
+import { toast } from "@/components/ui/toast";
 
 export default function SignupForm(){
     const {
         register,
         handleSubmit,
         watch,
+        setError,
         formState: {errors}
     } = useForm<SignupType>({
-        resolver: zodResolver(signupSchema)
+        resolver: zodResolver(signupSchema),
+        mode: "onChange"
     });
 
     const router = useRouter();
@@ -27,21 +31,10 @@ export default function SignupForm(){
     const email = watch("email");
     const password = watch("password");
     const confirmPassword = watch("confirmPassword");
-    const [passwordsMismatch, setPasswordsMismatch] = useState(false);
 
     useEffect(() => {
         setFormError(null);
     }, [name, email, password, confirmPassword]);
-
-    useEffect(() => {
-        if (!confirmPassword || password === confirmPassword) {
-            setPasswordsMismatch(false);
-            return;
-        }
-        if (password && password.length === confirmPassword.length) {
-            setPasswordsMismatch(true);
-        }
-    }, [password, confirmPassword]);
 
     const onSubmit = async (data: SignupType)=>{
         setFormError(null);
@@ -54,10 +47,19 @@ export default function SignupForm(){
         });
 
         if(!res.ok){
-            const {error} = await res.json();
-            setFormError(error);
+            const body: ApiErrorResponse = await res.json();
+            if(body.fieldErrors){
+                Object.entries(body.fieldErrors).forEach(([field, messages])=>{
+                    setError(field as keyof SignupType, {
+                        type: "server",
+                        message: messages[0]
+                    });
+                });
+            }
+            setFormError(body.error);
             return;
         }
+        toast.add({title: "Account created successfully", type: "success"});
         router.push('/dashboard');
     }
 
@@ -91,9 +93,6 @@ export default function SignupForm(){
                 placeholder="Daniel@1234"
                 {...register("password")}
             />
-            {passwordsMismatch && (
-                <p className="text-sm text-red-600">Passwords do not match</p>
-            )}
             <InputBox
                 label="Confirm Password"
                 id="confirmPassword"

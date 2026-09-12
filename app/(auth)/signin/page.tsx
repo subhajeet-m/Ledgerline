@@ -10,12 +10,15 @@ import Heading from "@/components/Heading";
 import SubHeading from "@/components/SubHeading";
 import InputBox from "@/components/InputBox";
 import Button from "@/components/Button";
+import { ApiErrorResponse } from "@/types";
+import { toast } from "@/components/ui/toast";
 
 export default function SigninForm(){
     const {
         register,
         handleSubmit,
         watch,
+        setError,
         formState: {errors}
     } = useForm<SigninType>({
         resolver: zodResolver(signinSchema)
@@ -41,11 +44,19 @@ export default function SigninForm(){
         });
 
         if(!res.ok){
-            const {error} = await res.json();
-            setFormError(error);
+            const body: ApiErrorResponse = await res.json();
+            if(body.fieldErrors){
+                Object.entries(body.fieldErrors).forEach(([field, messages])=>{
+                    setError(field as keyof SigninType, {
+                        type: "server",
+                        message: messages[0]
+                    });
+                });
+            }
+            setFormError(body.error);
             return;
         }
-
+        toast.add({title: "Signed in successfully", type:"success"})
         router.push("/dashboard");
     }
 

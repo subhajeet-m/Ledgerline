@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { signAccessToken, signRefreshToken, hashRefreshToken } from "@/lib/auth";
 import { signinLimiter } from "@/lib/ratelimit";
 import { ipAddress } from "@vercel/functions";
+import { ApiErrorResponse } from "@/types";
 
 const DUMMY_HASH = bcrypt.hashSync("dummypass", 10);
 
@@ -14,8 +15,13 @@ export async function POST(req: NextRequest){
     const ip = ipAddress(req) ?? "127.0.0.1";
 
     const validationResult = signinSchema.safeParse(body);
-    if(!validationResult.success)
-        return NextResponse.json({error: z.flattenError(validationResult.error)}, {status: 400});
+    if(!validationResult.success){
+        const flattenedError = z.flattenError(validationResult.error);
+        return NextResponse.json<ApiErrorResponse>({
+            error: "Please enter valid details",
+            fieldErrors: flattenedError.fieldErrors
+        }, {status: 400});
+    }
 
     const user = await prisma.user.findUnique({where: {email: validationResult.data.email}});
 

@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { ApiErrorResponse } from "@/types";
+import { toast } from "@/components/ui/toast";
 
 export default function TransferForm(){
     const {
@@ -16,6 +18,7 @@ export default function TransferForm(){
         handleSubmit,
         watch,
         reset,
+        setError,
         formState: {errors}
     } = useForm<TransferInputType, unknown, TransferOutputType>({
         resolver: zodResolver(transferUISchema)
@@ -46,11 +49,20 @@ export default function TransferForm(){
         });
 
         if(!res.ok){
-            const {error} = await res.json();
-            setFormError(error);
+            const body: ApiErrorResponse = await res.json();
+            if(body.fieldErrors){
+                Object.entries(body.fieldErrors).forEach(([field, messages])=>{
+                    setError(field as keyof TransferInputType, {
+                        type: "server",
+                        message: messages[0]
+                    });
+                });
+            }
+            setFormError(body.error);
             return;
         }
 
+        toast.add({title: "Transfer successful", type: "success"});
         setIdempotencyKey(crypto.randomUUID());
         reset();
         router.push("/dashboard");

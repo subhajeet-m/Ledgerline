@@ -5,13 +5,19 @@ import bcrypt from 'bcrypt';
 import { prisma } from "@/lib/prisma";
 import { signAccessToken, signRefreshToken, hashRefreshToken } from "@/lib/auth";
 import { Prisma } from "@/app/generated/prisma/client";
+import { ApiErrorResponse } from "@/types";
 
 export async function POST(req: NextRequest){
     const body = await req.json();
     
     const validationResult = signupSchema.safeParse(body);
-    if(!validationResult.success)
-        return NextResponse.json({error: z.flattenError(validationResult.error)}, {status: 400});
+    if(!validationResult.success){
+        const flattenedError = z.flattenError(validationResult.error);
+        return NextResponse.json<ApiErrorResponse>({
+            error: "Please enter valid details",
+            fieldErrors: flattenedError.fieldErrors
+        }, {status: 400});
+    }
 
     const data = validationResult.data;
 
