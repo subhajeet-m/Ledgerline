@@ -30,5 +30,5 @@ export async function proxy(req: NextRequest){
 }
 
 export const config = {
-    matcher: ["/dashboard/:path*"]
+    matcher: ['/((?!api|signin|signup|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)']
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import Button from "@/components/Button";
+import FormButton from "@/components/FormButton";
 import Heading from "@/components/Heading";
 import InputBox from "@/components/InputBox";
 import SubHeading from "@/components/SubHeading";
@@ -89,7 +89,7 @@ return (
             type="number"
             placeholder="Enter amount"
             {...register("amount")} />
-            <Button buttonText="Transfer"/>
+            <FormButton buttonText="Transfer"/>
         </form>
     )
 }

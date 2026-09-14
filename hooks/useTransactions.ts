@@ -1,14 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-
-type Transactions = {
-    id: number;
-    senderWalletId: number;
-    receiverWalletId: number;
-    amount: string;
-    createdAt: string;
-    senderName: string;
-    receiverName: string;
-};
+import { Transactions } from "@/types";
 
 export function useTransactions(initialTransfer: Transactions[], initialNextCursor: number | null){
     return useInfiniteQuery({

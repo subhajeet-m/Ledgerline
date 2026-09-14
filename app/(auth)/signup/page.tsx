@@ -9,7 +9,7 @@ import { signupSchema, SignupType } from "@/lib/validation/auth.schema";
 import Heading from "@/components/Heading";
 import SubHeading from "@/components/SubHeading";
 import InputBox from "@/components/InputBox";
-import Button from "@/components/Button";
+import FormButton from "@/components/FormButton";
 import { ApiErrorResponse } from "@/types";
 import { toast } from "@/components/ui/toast";
 
@@ -101,7 +101,7 @@ export default function SignupForm(){
                 {...register("confirmPassword")}
             />
 
-            <Button buttonText="Sign Up" />
+            <FormButton buttonText="Sign Up" />
             <p className="text-center text-sm text-gray-400">
                 Already have an account?{" "}
                 <Link href="/signin" className="font-medium text-black hover:underline">

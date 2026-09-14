@@ -9,7 +9,7 @@ import { signinSchema, SigninType } from "@/lib/validation/auth.schema";
 import Heading from "@/components/Heading";
 import SubHeading from "@/components/SubHeading";
 import InputBox from "@/components/InputBox";
-import Button from "@/components/Button";
+import FormButton from "@/components/FormButton";
 import { ApiErrorResponse } from "@/types";
 import { toast } from "@/components/ui/toast";
 
@@ -80,7 +80,7 @@ export default function SigninForm(){
             type="password"
             placeholder="Enter your password"
             {...register("password")} />
-            <Button buttonText="Sign In"/>
+            <FormButton buttonText="Sign In"/>
             <p className="text-center text-sm text-gray-400">
                 New to Ledgerline?{" "}
                 <Link href="/signup" className="font-medium text-black hover:underline">

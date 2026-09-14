@@ -1,4 +1,4 @@
-export default function Button({ buttonText }: { buttonText: string }) {
+export default function FormButton({ buttonText }: { buttonText: string }) {
     return (
         <button
             type="submit"

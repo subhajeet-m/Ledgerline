@@ -2,16 +2,7 @@
 
 import { useTransactions } from "@/hooks/useTransactions";
 import { formatINR } from "@/lib/format";
-
-type Transactions = {
-    id: number;
-    senderWalletId: number;
-    receiverWalletId: number;
-    amount: string;
-    createdAt: string;
-    senderName: string;
-    receiverName: string;
-};
+import { Transactions } from "@/types";
 
 type Props = {
     initialTransfer: Transactions[];
