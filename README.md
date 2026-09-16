@@ -2,8 +2,13 @@
 
 A wallet/payments app built to demonstrate concurrency-safe money transfers, idempotency, and rate limiting — with a real, clickable UI end to end, not just working endpoints.
 
-**Live demo:** [TODO — add once deployed]
-**Screenshots / GIF:** [TODO — add a signup → transfer → transaction-list walkthrough]
+**Live demo:** https://ledgerline-green.vercel.app
+
+**Screenshots:**
+
+| Dashboard | Transfer | Transaction history |
+|---|---|---|
+| ![Dashboard showing wallet balance](docs/screenshots/dashboard.png) | ![Transfer money form](docs/screenshots/transfer.jpg) | ![Transaction list with a completed transfer](docs/screenshots/transactions.jpg) |
 
 ## What it does
 
