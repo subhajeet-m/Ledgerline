@@ -8,10 +8,11 @@ type InputBoxProps = {
     step?: string | number;
     error?: string;
     placeholder?: string;
+    disabled?: boolean;
 } & UseFormRegisterReturn;
 
 const InputBox = forwardRef<HTMLInputElement, InputBoxProps>(
-    ({ label, id, type = "text", step, error, placeholder, ...registerProps }, ref) => {
+    ({ label, id, type = "text", step, error, placeholder, disabled, ...registerProps }, ref) => {
         return (
             <div className="flex flex-col w-full space-y-2.5">
                 <label htmlFor={id} className="text-base font-medium text-black text-left">
@@ -23,7 +24,8 @@ const InputBox = forwardRef<HTMLInputElement, InputBoxProps>(
                     type={type}
                     step={step}
                     placeholder={placeholder}
-                    className="border-2 rounded-sm border-gray-200 focus:border-gray-700 p-1.5"
+                    disabled={disabled}
+                    className="border-2 rounded-sm border-gray-200 focus:border-gray-700 p-1.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-50"
                     {...registerProps}
                 />
                 {error && <p className="text-sm text-red-600">{error}</p>}

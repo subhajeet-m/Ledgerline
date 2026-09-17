@@ -19,7 +19,7 @@ export default function SignupForm(){
         handleSubmit,
         watch,
         setError,
-        formState: {errors}
+        formState: {errors, isSubmitting}
     } = useForm<SignupType>({
         resolver: zodResolver(signupSchema),
         mode: "onChange"
@@ -75,6 +75,7 @@ export default function SignupForm(){
                 id="name"
                 error={errors.name?.message}
                 placeholder="Daniel Adams"
+                disabled={isSubmitting}
                 {...register("name")}
             />
             <InputBox
@@ -83,6 +84,7 @@ export default function SignupForm(){
                 type="email"
                 error={errors.email?.message}
                 placeholder="daniel@gmail.com"
+                disabled={isSubmitting}
                 {...register("email")}
             />
             <InputBox
@@ -91,6 +93,7 @@ export default function SignupForm(){
                 type="password"
                 error={errors.password?.message}
                 placeholder="Daniel@1234"
+                disabled={isSubmitting}
                 {...register("password")}
             />
             <InputBox
@@ -98,10 +101,11 @@ export default function SignupForm(){
                 id="confirmPassword"
                 type="password"
                 error={errors.confirmPassword?.message}
+                disabled={isSubmitting}
                 {...register("confirmPassword")}
             />
 
-            <FormButton buttonText="Sign Up" />
+            <FormButton buttonText="Sign Up" disabled={isSubmitting} />
             <p className="text-center text-sm text-gray-400">
                 Already have an account?{" "}
                 <Link href="/signin" className="font-medium text-black hover:underline">

@@ -19,7 +19,7 @@ export default function SigninForm(){
         handleSubmit,
         watch,
         setError,
-        formState: {errors}
+        formState: {errors, isSubmitting}
     } = useForm<SigninType>({
         resolver: zodResolver(signinSchema)
     });
@@ -72,6 +72,7 @@ export default function SigninForm(){
             error={errors.email?.message}
             type="email"
             placeholder="Enter your email"
+            disabled={isSubmitting}
             {...register("email")} />
             <InputBox
             label="Password"
@@ -79,8 +80,9 @@ export default function SigninForm(){
             error={errors.password?.message}
             type="password"
             placeholder="Enter your password"
+            disabled={isSubmitting}
             {...register("password")} />
-            <FormButton buttonText="Sign In"/>
+            <FormButton buttonText="Sign In" disabled={isSubmitting}/>
             <p className="text-center text-sm text-gray-400">
                 New to Ledgerline?{" "}
                 <Link href="/signup" className="font-medium text-black hover:underline">

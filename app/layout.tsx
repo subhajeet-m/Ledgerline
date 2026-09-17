@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Ledgerline",
-  description: "Payments and wallet app — in development.",
+  description: "A digital wallet with concurrency-safe transfers, idempotent APIs, and JWT authentication.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

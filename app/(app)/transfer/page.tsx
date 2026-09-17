@@ -19,7 +19,7 @@ export default function TransferForm(){
         watch,
         reset,
         setError,
-        formState: {errors}
+        formState: {errors, isSubmitting}
     } = useForm<TransferInputType, unknown, TransferOutputType>({
         resolver: zodResolver(transferUISchema)
     });
@@ -80,6 +80,7 @@ return (
             error={errors.recipientMail?.message}
             type="email"
             placeholder="Enter recipient's email"
+            disabled={isSubmitting}
             {...register("recipientMail")} />
             <InputBox
             label="Amount"
@@ -88,8 +89,9 @@ return (
             error={errors.amount?.message}
             type="number"
             placeholder="Enter amount"
+            disabled={isSubmitting}
             {...register("amount")} />
-            <FormButton buttonText="Transfer"/>
+            <FormButton buttonText="Transfer" disabled={isSubmitting}/>
         </form>
     )
 }
