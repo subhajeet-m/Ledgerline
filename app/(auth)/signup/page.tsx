@@ -68,7 +68,7 @@ export default function SignupForm(){
             <Heading title="Sign Up" />
             <SubHeading subheading="Enter your information to create an account" />
 
-            {formError && <p className="text-sm text-red-600">{formError}</p>}
+            {formError && <p role="alert" className="text-sm text-red-600">{formError}</p>}
 
             <InputBox
                 label="Name"

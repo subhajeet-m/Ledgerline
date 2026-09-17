@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/toast";
 import "./globals.css";
 
@@ -16,6 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Ledgerline",
   description: "A digital wallet with concurrency-safe transfers, idempotent APIs, and JWT authentication.",
+  openGraph: {
+    title: "Ledgerline",
+    description: "A digital wallet with concurrency-safe transfers, idempotent APIs, and JWT authentication.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -27,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <main>{children}</main>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );

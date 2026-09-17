@@ -72,7 +72,7 @@ return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5">
             <Heading title="Transfer Money" />
             <SubHeading subheading="Send money to another Ledgerline user"/>
-            {formError && <p className="text-sm text-red-600">{formError}</p>}
+            {formError && <p role="alert" className="text-sm text-red-600">{formError}</p>}
 
             <InputBox
             label="Recipient Email"

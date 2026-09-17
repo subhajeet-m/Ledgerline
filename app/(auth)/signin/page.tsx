@@ -64,7 +64,7 @@ export default function SigninForm(){
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5">
             <Heading title="Sign In" />
             <SubHeading subheading="Enter your details to log into your account"/>
-            {formError && <p className="text-sm text-red-600">{formError}</p>}
+            {formError && <p role="alert" className="text-sm text-red-600">{formError}</p>}
 
             <InputBox
             label="Email"

@@ -1,6 +1,12 @@
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Sign In / Sign Up — Ledgerline",
+    description: "Sign in or create an account on Ledgerline, a concurrency-safe digital wallet.",
+};
 
 export default async function AuthLayout({children}:{children:ReactNode}){
     const session = await getSession();

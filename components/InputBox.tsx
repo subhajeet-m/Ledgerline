@@ -25,10 +25,11 @@ const InputBox = forwardRef<HTMLInputElement, InputBoxProps>(
                     step={step}
                     placeholder={placeholder}
                     disabled={disabled}
+                    aria-describedby={error ? `${id}-error` : undefined}
                     className="border-2 rounded-sm border-gray-200 focus:border-gray-700 p-1.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-50"
                     {...registerProps}
                 />
-                {error && <p className="text-sm text-red-600">{error}</p>}
+                {error && <p id={`${id}-error`} role="alert" className="text-sm text-red-600">{error}</p>}
             </div>
         );
     }
