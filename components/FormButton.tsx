@@ -3,7 +3,7 @@ export default function FormButton({ buttonText, disabled }: { buttonText: strin
         <button
             type="submit"
             disabled={disabled}
-            className="text-white bg-gray-900 hover:bg-black rounded-md p-2 w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-900"
+            className="text-white bg-indigo-500 hover:bg-indigo-600 rounded-md p-2 w-full cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-500"
         >
             {buttonText}
         </button>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import QueryProvider from "@/components/QueryProvider";
 import SignOutButton from "@/components/SignOutButton";
+import AppNav from "@/components/AppNav";
 
 export const metadata: Metadata = {
     title: "Ledgerline",
@@ -18,11 +19,10 @@ export default async function dashboardLayout({children}:{children:ReactNode}){
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <nav className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 bg-white px-6 py-4 shadow-sm">
-                <span className="text-lg font-bold text-black">Ledgerline</span>
+            <nav className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 bg-white px-6 py-4 border-b border-gray-100">
+                <Link href="/dashboard" className="text-lg font-bold text-black">Ledgerline</Link>
                 <div className="flex items-center gap-4">
-                    <Link href="/transfer" className="text-sm text-gray-600 hover:underline">Transfer</Link>
-                    <Link href="/transactions" className="text-sm text-gray-600 hover:underline">Transactions</Link>
+                    <AppNav />
                     <SignOutButton></SignOutButton>
                 </div>
             </nav>

@@ -24,11 +24,11 @@ export default async function Home(){
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
-            <nav className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 bg-white px-6 py-4 shadow-sm">
+            <nav className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 bg-white px-6 py-4 border-b border-gray-100">
                 <span className="text-lg font-bold text-black">Ledgerline</span>
                 <div className="flex items-center gap-4">
                     <Link href="/signin" className="text-sm text-gray-600 hover:underline">Sign In</Link>
-                    <Link href="/signup" className="text-sm text-white bg-gray-900 hover:bg-black rounded-md px-4 py-2">Sign Up</Link>
+                    <Link href="/signup" className="text-sm text-white bg-indigo-500 hover:bg-indigo-600 rounded-md px-4 py-2 transition-colors">Sign Up</Link>
                 </div>
             </nav>
 
@@ -38,7 +38,7 @@ export default async function Home(){
                     Concurrency-safe transfers, idempotent APIs, and JWT authentication — a full-stack demo of production-style payments engineering.
                 </p>
                 <div className="mt-8 flex gap-4">
-                    <Link href="/signup" className="text-white bg-gray-900 hover:bg-black rounded-md px-6 py-3 font-medium">Get Started</Link>
+                    <Link href="/signup" className="text-white bg-indigo-500 hover:bg-indigo-600 rounded-md px-6 py-3 font-medium transition-colors">Get Started</Link>
                     <Link href="/signin" className="text-black border-2 border-gray-200 hover:border-gray-400 rounded-md px-6 py-3 font-medium">Sign In</Link>
                 </div>
             </section>
