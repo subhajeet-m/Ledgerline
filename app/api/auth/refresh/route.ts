@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyRefreshToken, hashRefreshToken, signAccessToken, signRefreshToken } from "@/lib/auth";
+import { setAuthCookies } from "@/lib/session-cookies";
 
 export async function POST(req: NextRequest){
     const refreshToken = req.cookies.get("refreshToken")?.value;
@@ -42,22 +43,7 @@ export async function POST(req: NextRequest){
     });
 
     const response = NextResponse.json({success: true}, {status: 200});
-    response.cookies.set("accessToken", newAccessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 15*60
-    });
-    response.cookies.set("refreshToken", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 7*24*60*60
-    });
-
-    return response;
+    return setAuthCookies(response, newAccessToken, token);
 }
 
 function isSafeRedirect(path: string): boolean {
@@ -115,20 +101,5 @@ export async function GET(req: NextRequest){
     });
 
     const response = NextResponse.redirect(new URL(redirectTo, req.url));
-    response.cookies.set("accessToken", newAccessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 15*60
-    });
-    response.cookies.set("refreshToken", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 7*24*60*60
-    });
-
-    return response;
+    return setAuthCookies(response, newAccessToken, token);
 }

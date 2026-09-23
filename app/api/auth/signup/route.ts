@@ -4,6 +4,7 @@ import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import { prisma } from "@/lib/prisma";
 import { signAccessToken, signRefreshToken, hashRefreshToken } from "@/lib/auth";
+import { setAuthCookies } from "@/lib/session-cookies";
 import { Prisma } from "@/app/generated/prisma/client";
 import { ApiErrorResponse } from "@/types";
 
@@ -63,20 +64,5 @@ export async function POST(req: NextRequest){
     })
 
     const response = NextResponse.json({user: {id: user.id, email: user.email}}, {status: 201});
-    response.cookies.set("accessToken", accessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60*15
-    });
-    response.cookies.set("refreshToken", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60*60*24*7
-    });
-
-    return response;
+    return setAuthCookies(response, accessToken, token);
 }

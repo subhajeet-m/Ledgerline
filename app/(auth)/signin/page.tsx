@@ -10,6 +10,7 @@ import Heading from "@/components/Heading";
 import SubHeading from "@/components/SubHeading";
 import InputBox from "@/components/InputBox";
 import FormButton from "@/components/FormButton";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
 import { ApiErrorResponse } from "@/types";
 import { toast } from "@/components/ui/toast";
 
@@ -83,6 +84,12 @@ export default function SigninForm(){
             disabled={isSubmitting}
             {...register("password")} />
             <FormButton buttonText="Sign In" disabled={isSubmitting}/>
+            <div className="flex items-center gap-2 text-xs text-gray-400">
+                <div className="flex-1 border-t border-gray-200"></div>
+                or
+                <div className="flex-1 border-t border-gray-200"></div>
+            </div>
+            <GoogleSignInButton />
             <p className="text-center text-sm text-gray-400">
                 New to Ledgerline?{" "}
                 <Link href="/signup" className="font-medium text-black hover:underline">
