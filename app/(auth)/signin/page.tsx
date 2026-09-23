@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signinSchema, SigninType } from "@/lib/validation/auth.schema";
 import Heading from "@/components/Heading";
@@ -26,6 +26,7 @@ export default function SigninForm(){
     });
 
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [formError, setFormError] = useState<string | null>(null);
     const email = watch("email");
     const password = watch("password");
@@ -33,6 +34,17 @@ export default function SigninForm(){
     useEffect(() => {
         setFormError(null);
     }, [email, password]);
+
+    useEffect(() => {
+        const error = searchParams.get("error");
+        if (error === "oauth_failed") {
+            toast.add({ title: "Google sign-in failed. Please try again.", type: "error" });
+            router.replace("/signin");
+        } else if (error === "email_not_verified") {
+            toast.add({ title: "That Google account's email isn't verified. Please sign in with your password instead.", type: "error" });
+            router.replace("/signin");
+        }
+    }, [searchParams, router]);
 
     const onSubmit = async (data: SigninType)=>{
         setFormError(null);
