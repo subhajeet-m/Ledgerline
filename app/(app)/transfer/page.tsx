@@ -11,6 +11,18 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { ApiErrorResponse } from "@/types";
 import { toast } from "@/components/ui/toast";
+import { formatINR } from "@/lib/format";
+import { Loader2 } from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function TransferForm(){
     const {
@@ -28,47 +40,62 @@ export default function TransferForm(){
 
     const [idempotencyKey, setIdempotencyKey] = useState(()=>crypto.randomUUID());
     const [formError, setFormError] = useState<string | null>(null);
+    const [pendingTransfer, setPendingTransfer] = useState<TransferOutputType | null>(null);
+    const [isConfirming, setIsConfirming] = useState(false);
     const recipientMail = watch("recipientMail");
     const amount = watch("amount");
-    
+
     useEffect(() => {
         setFormError(null);
     }, [recipientMail, amount]);
 
-    const onSubmit = async (data: TransferOutputType)=>{
+    const onSubmit = (data: TransferOutputType)=>{
         setFormError(null);
+        setPendingTransfer(data);
+    };
 
-        const res = await fetch('/api/wallet/transfer', {
-            method: "POST",
-            headers: {
-                "Content-Type":"application/json",
-                "Idempotency-Key":idempotencyKey
-            },
-            credentials: "include",
-            body: JSON.stringify({recipientMail:data.recipientMail, amount: data.amount})
-        });
+    const confirmTransfer = async ()=>{
+        if(!pendingTransfer) return;
+        setIsConfirming(true);
 
-        if(!res.ok){
-            const body: ApiErrorResponse = await res.json();
-            if(body.fieldErrors){
-                Object.entries(body.fieldErrors).forEach(([field, messages])=>{
-                    setError(field as keyof TransferInputType, {
-                        type: "server",
-                        message: messages[0]
+        try{
+            const res = await fetch('/api/wallet/transfer', {
+                method: "POST",
+                headers: {
+                    "Content-Type":"application/json",
+                    "Idempotency-Key":idempotencyKey
+                },
+                credentials: "include",
+                body: JSON.stringify({recipientMail:pendingTransfer.recipientMail, amount: pendingTransfer.amount})
+            });
+
+            if(!res.ok){
+                const body: ApiErrorResponse = await res.json();
+                if(body.fieldErrors){
+                    Object.entries(body.fieldErrors).forEach(([field, messages])=>{
+                        setError(field as keyof TransferInputType, {
+                            type: "server",
+                            message: messages[0]
+                        });
                     });
-                });
+                }
+                setPendingTransfer(null);
+                setFormError(body.error);
+                return;
             }
-            setFormError(body.error);
-            return;
-        }
 
-        toast.add({title: "Transfer successful", type: "success"});
-        setIdempotencyKey(crypto.randomUUID());
-        reset();
-        router.push("/dashboard");
+            toast.add({title: "Transfer successful", type: "success"});
+            setPendingTransfer(null);
+            setIdempotencyKey(crypto.randomUUID());
+            reset();
+            router.push("/dashboard");
+        } finally {
+            setIsConfirming(false);
+        }
     };
 
 return (
+        <>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5">
             <Heading title="Transfer Money" />
             <SubHeading subheading="Send money to another Ledgerline user"/>
@@ -93,5 +120,26 @@ return (
             {...register("amount")} />
             <FormButton buttonText="Transfer" disabled={isSubmitting}/>
         </form>
+
+        <AlertDialog open={pendingTransfer !== null} onOpenChange={(open)=>{ if(!open && !isConfirming) setPendingTransfer(null); }}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Confirm transfer</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        {pendingTransfer && (
+                            <>Send <strong>{formatINR(pendingTransfer.amount)}</strong> to <strong>{pendingTransfer.recipientMail}</strong>? This can&apos;t be undone.</>
+                        )}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel disabled={isConfirming}>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={confirmTransfer} disabled={isConfirming}>
+                        {isConfirming && <Loader2 className="w-4 h-4 animate-spin" />}
+                        Confirm
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+        </>
     )
 }

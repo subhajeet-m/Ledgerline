@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { notFound } from "next/navigation";
 import TransactionList from "@/components/TransactionList";
+import Heading from "@/components/Heading";
 
 export default async function TransactionPage(){
     const session = await getSession();
@@ -40,7 +41,7 @@ export default async function TransactionPage(){
 
     return (
         <div className="space-y-4">
-            <h1 className="text-2xl font-bold text-black">Transactions</h1>
+            <Heading title="Transactions" />
             <TransactionList
             initialTransfer = {serialized}
             initialNextCursor = {nextCursor}

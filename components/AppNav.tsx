@@ -7,7 +7,7 @@ import { ArrowRightLeft, Receipt } from "lucide-react";
 export default function AppNav() {
     const pathname = usePathname();
     const linkClass = (href: string) =>
-        `flex items-center gap-1.5 text-sm hover:underline ${pathname === href ? "text-indigo-600 font-medium" : "text-gray-600"}`;
+        `flex items-center gap-1.5 text-sm hover:underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:ring-offset-1 rounded-sm ${pathname === href ? "text-indigo-600 font-medium" : "text-gray-600"}`;
 
     return (
         <div className="flex items-center gap-4">
